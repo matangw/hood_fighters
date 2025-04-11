@@ -1,0 +1,15 @@
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+UserSettings/
+Logs/
+MemoryCaptures/
+.vscode/
+.idea/
+*.csproj
+*.unityproj
+*.sln
+Packages/manifest.json
+Packages/packages-lock.json
