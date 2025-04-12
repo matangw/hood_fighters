@@ -23,6 +23,7 @@ public class Matan_Movements : MonoBehaviour
     private bool isGrounded;
     private bool isWallSliding;
     private bool isWallJumping = false;
+    private bool hasDoubleJumped = false;
     public float moveInput;
     private float directionChangeTimer;
     private float originalXScale;
@@ -76,6 +77,10 @@ public class Matan_Movements : MonoBehaviour
     private void CheckGrounded()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, LayerMask.GetMask("ground"));
+        if (isGrounded)
+        {
+            hasDoubleJumped = false;
+        }
     }
 
     private void CheckWallSlide()
@@ -129,38 +134,46 @@ public class Matan_Movements : MonoBehaviour
 
     private void HandleJumping()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && (isGrounded || isWallSliding))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (animator != null) animator.SetTrigger("jump");
+            if (isGrounded || isWallSliding)
+            {
+                if (animator != null) animator.SetTrigger("jump");
 
-            // Add a small horizontal force away from the wall when wall jumping
-            if (isWallSliding)
-            {
-                JumpOppositeDirection();
+                // Add a small horizontal force away from the wall when wall jumping
+                if (isWallSliding)
+                {
+                    WallJump();
+                }
+                else
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                }
             }
-            else
+            else if (!hasDoubleJumped)
             {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+                hasDoubleJumped = true;
+                if (animator != null) animator.SetTrigger("jump");
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce * 0.8f);
             }
         }
     }
 
 
-    public void JumpOppositeDirection()
+    public void WallJump()
     {
         float facingDirection = transform.localScale.x > 0 ? 1f : -1f;
 
         // Set the velocity directly
-        rb.linearVelocity = new Vector2(-facingDirection * jumpHorizontalForce, jumpForce);
+        rb.linearVelocity = new Vector2(-facingDirection * jumpHorizontalForce, jumpForce * 0.8f);
 
         // Disable movement & wall sliding for a moment to avoid interference
         isWallJumping = true;
         isWallSliding = false;
         moveInput = 0;
+        hasDoubleJumped = false;
 
-        Debug.Log("WALL JUMP velocity: " + rb.linearVelocity);
-
-        Invoke(nameof(ResetWallJump), 0.8f);
+        Invoke(nameof(ResetWallJump), 0.6f);
     }
 
     private void ResetWallJump()
