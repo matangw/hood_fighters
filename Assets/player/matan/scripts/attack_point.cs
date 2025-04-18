@@ -81,13 +81,14 @@ public class attack_point : MonoBehaviour
         cooldownEndTime = Time.time + currentPunch.duration;
         Debug.Log($"Starting cooldown for {currentPunch.duration} seconds");
 
-        Debug.Log($"Scheduling attack for {currentPunch.hitSecond} seconds from now");
+        Debug.Log($"Current time: {Time.time}, Scheduling attack for {currentPunch.hitSecond} seconds from now");
         // Schedule the attack for the hitSecond timing
         Invoke(nameof(PerformAttack), currentPunch.hitSecond);
     }
 
     private void PerformAttack()
     {
+        Debug.Log($"Attack executed at time: {Time.time}");
         int enemyLayer = LayerMask.GetMask("enemy");
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, attackRadius, enemyLayer);
         Debug.Log("Number of colliders found: " + hitColliders.Length);
@@ -156,8 +157,40 @@ public class attack_point : MonoBehaviour
         Rigidbody2D rb = collider.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            Vector2 direction = (collider.transform.position - transform.position).normalized;
-            //rb.linearVelocity = direction * 10f;
+            Punch currentPunch;
+            if (combatScript.IsGrounded())
+            {
+                currentPunch = isHeavyPunch ?
+                    PunchData.HeavyPunches[Mathf.Min(combatScript.GetComboCounter(), PunchData.HeavyPunches.Length - 1)] :
+                    PunchData.RegularPunches[Mathf.Min(combatScript.GetComboCounter(), PunchData.RegularPunches.Length - 1)];
+            }
+            else
+            {
+                if (isHeavyPunch)
+                {
+                    int airAiming = animator != null ? animator.GetInteger("air_aiming") : 0;
+                    if (airAiming > 0)
+                    {
+                        currentPunch = PunchData.HeavyPunches[0];
+                    }
+                    else if (airAiming < 0)
+                    {
+                        currentPunch = PunchData.HeavyPunches[1];
+                    }
+                    else
+                    {
+                        currentPunch = PunchData.HeavyPunches[2];
+                    }
+                }
+                else
+                {
+                    currentPunch = PunchData.RegularPunches[0];
+                }
+            }
+
+            float knockbackForce = isHeavyPunch ? 5f : 2f;
+            Vector2 adjustedDirection = new Vector2(currentPunch.direction.x * transform.parent.localScale.x, currentPunch.direction.y);
+            rb.linearVelocity = adjustedDirection * knockbackForce;
         }
     }
 
