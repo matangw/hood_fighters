@@ -4,7 +4,7 @@ public class attack_point : MonoBehaviour
 {
     [SerializeField] private float attackRadius = 3f;
     private bool isHeavyPunch = false;
-    private Matan_Combat combatScript;
+    private Combat combatScript;
     private Animator animator;
     private bool isOnCooldown = false;
     private float cooldownEndTime = 0f;
@@ -12,7 +12,7 @@ public class attack_point : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        combatScript = GetComponentInParent<Matan_Combat>();
+        combatScript = GetComponentInParent<Combat>();
         animator = GetComponentInParent<Animator>();
     }
 

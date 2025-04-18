@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class Matan_Combat : MonoBehaviour
+public class Combat : MonoBehaviour
 {
     [Header("Combat Settings")]
     public float comboWindowTime = 1f; // Time window to continue a combo (in seconds)
@@ -16,13 +16,13 @@ public class Matan_Combat : MonoBehaviour
     private float originalGravityScale;
 
     // Reference to the movement script
-    private Matan_Movements movementScript;
+    private Movements movementScript;
 
     void Start()
     {
         // Get required components
         animator = GetComponent<Animator>();
-        movementScript = GetComponent<Matan_Movements>();
+        movementScript = GetComponent<Movements>();
         rb = GetComponent<Rigidbody2D>();
         originalGravityScale = rb.gravityScale;
 

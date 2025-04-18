@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Matan_Movements : MonoBehaviour
+public class Movements : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
