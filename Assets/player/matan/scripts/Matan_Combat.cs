@@ -229,4 +229,9 @@ public class Matan_Combat : MonoBehaviour
     {
         return comboCounter;
     }
+
+    public bool IsGrounded()
+    {
+        return movementScript != null && movementScript.IsGrounded;
+    }
 }
