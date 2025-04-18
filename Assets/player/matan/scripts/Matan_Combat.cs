@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class Matan_Combat : MonoBehaviour
 {
     [Header("Combat Settings")]
@@ -12,6 +12,8 @@ public class Matan_Combat : MonoBehaviour
     private float lastPunchTime = 0f;
     private bool canAttack = true;
     private bool isHeavyAttacking = false;
+    private Rigidbody2D rb;
+    private float originalGravityScale;
 
     // Reference to the movement script
     private Matan_Movements movementScript;
@@ -21,6 +23,8 @@ public class Matan_Combat : MonoBehaviour
         // Get required components
         animator = GetComponent<Animator>();
         movementScript = GetComponent<Matan_Movements>();
+        rb = GetComponent<Rigidbody2D>();
+        originalGravityScale = rb.gravityScale;
 
         if (animator == null)
         {
@@ -47,6 +51,30 @@ public class Matan_Combat : MonoBehaviour
         {
             HeavyPunch();
         }
+
+        // Handle air aiming
+        if (movementScript != null && !movementScript.IsGrounded)
+        {
+            UpdateAirAiming();
+        }
+    }
+
+    private void UpdateAirAiming()
+    {
+        if (animator == null) return;
+
+        int aimingValue = 0;
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            aimingValue = 1; // Aiming up
+        }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            aimingValue = -1; // Aiming down
+        }
+
+        animator.SetInteger("air_aiming", aimingValue);
     }
 
     private void Punch()
@@ -69,18 +97,38 @@ public class Matan_Combat : MonoBehaviour
 
     private void HeavyPunch()
     {
-        if (movementScript != null && movementScript.IsGrounded)
+        if (movementScript != null)
         {
-            isHeavyAttacking = true;
-            movementScript.enabled = false;
-
-            if (animator != null)
+            if (movementScript.IsGrounded)
             {
-                animator.SetTrigger("heavy_punch");
+                // Ground heavy attack
+                isHeavyAttacking = true;
+                movementScript.enabled = false;
+
+                if (animator != null)
+                {
+                    animator.SetTrigger("heavy_punch");
+                }
+
+                StartCoroutine(HeavyAttackCooldown());
             }
+            else
+            {
+                // Air heavy attack
+                isHeavyAttacking = true;
+                if (rb != null)
+                {
+                    // Freeze vertical movement
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+                    rb.gravityScale = 0;
+                }
 
-            StartCoroutine(HeavyAttackCooldown());
-
+                if (animator != null)
+                {
+                    animator.SetTrigger("heavy_punch");
+                }
+                StartCoroutine(HeavyAttackCooldown());
+            }
         }
     }
 
@@ -97,8 +145,7 @@ public class Matan_Combat : MonoBehaviour
             animator.SetInteger("combo_counter", comboCounter);
             animator.SetTrigger("punch");
 
-            // Debug info
-            Debug.Log("Ground punch triggered with combo: " + comboCounter);
+
         }
 
         // Increment combo counter
@@ -129,8 +176,7 @@ public class Matan_Combat : MonoBehaviour
             // Use the same punch trigger, animator will choose animation based on isGrounded
             animator.SetTrigger("punch");
 
-            // Debug info
-            Debug.Log("Air punch triggered");
+
         }
 
         // Prevent attack spamming by using a small delay
@@ -151,9 +197,15 @@ public class Matan_Combat : MonoBehaviour
         ResetCombo();
         canAttack = true;
         isHeavyAttacking = false;
+
+        // Restore movement and gravity
         if (movementScript != null)
         {
             movementScript.enabled = true;
+        }
+        if (rb != null)
+        {
+            rb.gravityScale = originalGravityScale;
         }
     }
 
@@ -171,5 +223,10 @@ public class Matan_Combat : MonoBehaviour
     public void ForceResetCombo()
     {
         ResetCombo();
+    }
+
+    public int GetComboCounter()
+    {
+        return comboCounter;
     }
 }
