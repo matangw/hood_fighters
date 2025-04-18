@@ -5,12 +5,13 @@ public class Matan_Combat : MonoBehaviour
 {
     [Header("Combat Settings")]
     public float comboWindowTime = 1f; // Time window to continue a combo (in seconds)
-    public int maxComboCount = 2; // Maximum number of hits in a combo
+    public int maxComboCount = 3; // Maximum number of hits in a combo
 
     private Animator animator;
     private int comboCounter = 0;
     private float lastPunchTime = 0f;
     private bool canAttack = true;
+    private bool isHeavyAttacking = false;
 
     // Reference to the movement script
     private Matan_Movements movementScript;
@@ -40,6 +41,12 @@ public class Matan_Combat : MonoBehaviour
         {
             Punch();
         }
+
+        // Handle heavy punch input
+        if (Input.GetKeyDown(KeyCode.L) && canAttack)
+        {
+            HeavyPunch();
+        }
     }
 
     private void Punch()
@@ -60,8 +67,27 @@ public class Matan_Combat : MonoBehaviour
         }
     }
 
+    private void HeavyPunch()
+    {
+        if (movementScript != null && movementScript.IsGrounded)
+        {
+            isHeavyAttacking = true;
+            movementScript.enabled = false;
+
+            if (animator != null)
+            {
+                animator.SetTrigger("heavy_punch");
+            }
+
+            StartCoroutine(HeavyAttackCooldown());
+
+        }
+    }
+
     private void GroundPunch()
     {
+        comboCounter++;
+
         // Update last punch time
         lastPunchTime = Time.time;
 
@@ -76,7 +102,7 @@ public class Matan_Combat : MonoBehaviour
         }
 
         // Increment combo counter
-        comboCounter++;
+
 
         // Check if we've reached max combo
         if (comboCounter >= maxComboCount)
@@ -116,6 +142,19 @@ public class Matan_Combat : MonoBehaviour
         canAttack = false;
         yield return new WaitForSeconds(cooldownTime);
         canAttack = true;
+    }
+
+    private IEnumerator HeavyAttackCooldown()
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(0.5f);
+        ResetCombo();
+        canAttack = true;
+        isHeavyAttacking = false;
+        if (movementScript != null)
+        {
+            movementScript.enabled = true;
+        }
     }
 
     private void ResetCombo()
