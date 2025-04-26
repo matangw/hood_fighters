@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class attack_point : MonoBehaviour
 {
@@ -9,16 +10,45 @@ public class attack_point : MonoBehaviour
     private bool isOnCooldown = false;
     private float cooldownEndTime = 0f;
 
+    // Input action references
+    private Player_actions playerActions;
+    private bool lightPunchPressed;
+    private bool heavyPunchPressed;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         combatScript = GetComponentInParent<Combat>();
         animator = GetComponentInParent<Animator>();
+
+        // Initialize input actions
+        playerActions = new Player_actions();
+        playerActions.player_action_map.Enable();
+    }
+
+    void OnEnable()
+    {
+        if (playerActions != null)
+        {
+            playerActions.player_action_map.Enable();
+        }
+    }
+
+    void OnDisable()
+    {
+        if (playerActions != null)
+        {
+            playerActions.player_action_map.Disable();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Read input values from both keyboard and input action
+        lightPunchPressed = playerActions.player_action_map.light_punch.triggered;
+        heavyPunchPressed = playerActions.player_action_map.heavy_punch.triggered;
+
         // Check if cooldown has ended
         if (isOnCooldown && Time.time >= cooldownEndTime)
         {
@@ -27,12 +57,13 @@ public class attack_point : MonoBehaviour
 
         if (!isOnCooldown)
         {
-            if (Input.GetKeyDown(KeyCode.K))
+            // Check for both keyboard and input action attacks
+            if (Input.GetKeyDown(KeyCode.K) || lightPunchPressed)
             {
                 isHeavyPunch = false;
                 PerformPunch();
             }
-            else if (Input.GetKeyDown(KeyCode.L))
+            else if (Input.GetKeyDown(KeyCode.L) || heavyPunchPressed)
             {
                 isHeavyPunch = true;
                 PerformPunch();

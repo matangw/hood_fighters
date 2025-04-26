@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Movements : MonoBehaviour
 {
@@ -28,6 +29,11 @@ public class Movements : MonoBehaviour
     private float directionChangeTimer;
     private float originalXScale;
 
+    // Input action references
+    private Player_actions playerActions;
+    private float movementInput;
+    private bool jumpPressed;
+
     // Public property to access isGrounded from other scripts
     public bool IsGrounded => isGrounded;
 
@@ -38,7 +44,25 @@ public class Movements : MonoBehaviour
         rb.freezeRotation = true;
         originalXScale = Mathf.Abs(transform.localScale.x);
 
+        // Initialize input actions
+        playerActions = new Player_actions();
+        playerActions.player_action_map.Enable();
+    }
 
+    void OnEnable()
+    {
+        if (playerActions != null)
+        {
+            playerActions.player_action_map.Enable();
+        }
+    }
+
+    void OnDisable()
+    {
+        if (playerActions != null)
+        {
+            playerActions.player_action_map.Disable();
+        }
     }
 
     void Update()
@@ -50,30 +74,35 @@ public class Movements : MonoBehaviour
         HandleJumping();
         UpdateAnimations();
         Debug.DrawLine(transform.position, transform.position + (Vector3)rb.linearVelocity.normalized * 2, Color.red);
-
     }
 
     private void HandleInput()
     {
-        // Get raw input first
-        float rawMoveInput = Input.GetAxis("Horizontal");
+        // Read input values from both keyboard and input action
+        var movementAction = playerActions.player_action_map.movement;
+        Vector2 movementInput = Vector2.zero;
+
+        if (movementAction.activeControl != null)
+        {
+            movementInput = movementAction.ReadValue<Vector2>();
+        }
 
         // If wall sliding, check if we should ignore the input
         if (isWallSliding)
         {
             float facingDirection = Mathf.Sign(transform.localScale.x);
             // If trying to move in the same direction as facing, ignore the input
-            if (Mathf.Sign(rawMoveInput) == facingDirection)
+            if (Mathf.Sign(movementInput.x) == facingDirection)
             {
-                rawMoveInput = 0;
+                movementInput.x = 0;
             }
-
         }
 
-        moveInput = rawMoveInput;
+        moveInput = movementInput.x;
+
+        // Read jump input
+        jumpPressed = playerActions.player_action_map.jump.triggered;
     }
-
-
 
     private void CheckGrounded()
     {
@@ -135,7 +164,8 @@ public class Movements : MonoBehaviour
 
     private void HandleJumping()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        // Check for jump input
+        if (jumpPressed)
         {
             if (isGrounded || isWallSliding)
             {
@@ -159,7 +189,6 @@ public class Movements : MonoBehaviour
             }
         }
     }
-
 
     public void WallJump()
     {
@@ -199,6 +228,5 @@ public class Movements : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(wallCheckFeet.position, wallCheckRadius);
         Gizmos.DrawWireSphere(wallCheckHead.position, wallCheckRadius);
-
     }
 }

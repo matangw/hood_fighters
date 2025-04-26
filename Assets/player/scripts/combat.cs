@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
+
 public class Combat : MonoBehaviour
 {
     [Header("Combat Settings")]
@@ -19,6 +21,15 @@ public class Combat : MonoBehaviour
     // Reference to the movement script
     private Movements movementScript;
 
+    // Input action references
+    private Player_actions playerActions;
+    private Vector2 movementInput;
+    private float yAimingInput;
+    private bool jumpPressed;
+    private bool lightPunchPressed;
+    private bool heavyPunchPressed;
+    private bool blockPressed;
+
     void Start()
     {
         // Get required components
@@ -27,16 +38,44 @@ public class Combat : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         originalGravityScale = rb.gravityScale;
 
+        // Initialize input actions
+        playerActions = new Player_actions();
+        playerActions.player_action_map.Enable();
+
         if (animator == null)
         {
             Debug.LogWarning("No Animator component found on player. Combat animations won't work.");
         }
     }
 
+    void OnEnable()
+    {
+        if (playerActions != null)
+        {
+            playerActions.player_action_map.Enable();
+        }
+    }
+
+    void OnDisable()
+    {
+        if (playerActions != null)
+        {
+            playerActions.player_action_map.Disable();
+        }
+    }
+
     void Update()
     {
-        // Handle blocking input first
-        isBlocking = Input.GetKey(KeyCode.J);
+        // Read input values from both keyboard and input action
+        movementInput = playerActions.player_action_map.movement.ReadValue<Vector2>();
+        yAimingInput = playerActions.player_action_map.y_aiming.ReadValue<float>();
+        jumpPressed = playerActions.player_action_map.jump.triggered;
+        lightPunchPressed = playerActions.player_action_map.light_punch.triggered;
+        heavyPunchPressed = playerActions.player_action_map.heavy_punch.triggered;
+        blockPressed = playerActions.player_action_map.block.IsPressed();
+
+        // Handle blocking input (both keyboard and input action)
+        isBlocking = Input.GetKey(KeyCode.J) || blockPressed;
         if (animator != null)
         {
             animator.SetBool("blocking", isBlocking);
@@ -62,14 +101,14 @@ public class Combat : MonoBehaviour
             ResetCombo();
         }
 
-        // Handle punch input
-        if (Input.GetKeyDown(KeyCode.K) && canAttack)
+        // Handle punch input (both keyboard and input action)
+        if ((Input.GetKeyDown(KeyCode.K) || lightPunchPressed) && canAttack)
         {
             Punch();
         }
 
-        // Handle heavy punch input
-        if (Input.GetKeyDown(KeyCode.L) && canAttack)
+        // Handle heavy punch input (both keyboard and input action)
+        if ((Input.GetKeyDown(KeyCode.L) || heavyPunchPressed) && canAttack)
         {
             HeavyPunch();
         }
@@ -87,11 +126,12 @@ public class Combat : MonoBehaviour
 
         int aimingValue = 0;
 
-        if (Input.GetKey(KeyCode.W))
+        // Use both keyboard and input action for aiming
+        if (Input.GetKey(KeyCode.W) || yAimingInput > 0)
         {
             aimingValue = 1; // Aiming up
         }
-        else if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S) || yAimingInput < 0)
         {
             aimingValue = -1; // Aiming down
         }
