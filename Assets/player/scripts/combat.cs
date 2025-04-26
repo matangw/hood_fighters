@@ -12,6 +12,7 @@ public class Combat : MonoBehaviour
     private float lastPunchTime = 0f;
     private bool canAttack = true;
     private bool isHeavyAttacking = false;
+    private bool isBlocking = false;
     private Rigidbody2D rb;
     private float originalGravityScale;
 
@@ -34,6 +35,27 @@ public class Combat : MonoBehaviour
 
     void Update()
     {
+        // Handle blocking input first
+        isBlocking = Input.GetKey(KeyCode.J);
+        if (animator != null)
+        {
+            animator.SetBool("blocking", isBlocking);
+        }
+
+        // If blocking, disable movement and return early
+        if (isBlocking)
+        {
+            if (movementScript != null)
+            {
+                movementScript.enabled = false;
+            }
+            return;
+        }
+        else if (movementScript != null)
+        {
+            movementScript.enabled = true;
+        }
+
         // Check if combo should reset due to time passed
         if (Time.time - lastPunchTime > comboWindowTime && comboCounter > 0)
         {

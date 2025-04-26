@@ -67,6 +67,7 @@ public class Movements : MonoBehaviour
             {
                 rawMoveInput = 0;
             }
+
         }
 
         moveInput = rawMoveInput;
