@@ -76,7 +76,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan idle
+  m_Name: samal idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -98,7 +98,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7457ab84e856540a6b1d3597cc1f4785, type: 2}
+  m_Motion: {fileID: 7400000, guid: 4fa7d548c0aca4dd8ac35e668a3cf167, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -325,7 +325,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: air attack down
+  m_Name: samal attack down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -339,7 +339,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 8faa0d2e06cae48ddb693a039efa015f, type: 2}
+  m_Motion: {fileID: 7400000, guid: 791845d2d1b574ba6b331f8d4f231c98, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -380,7 +380,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan havey punch 2
+  m_Name: samal havey punch 2
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -394,7 +394,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0015bf174532841e3ad72b5428676e47, type: 2}
+  m_Motion: {fileID: 7400000, guid: 4eecde96a635b4f15a52bb5ad0c79e85, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -457,7 +457,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan punch 3
+  m_Name: samal punch 3
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -471,7 +471,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: b8d7cabe9750841d1aa166a880b45385, type: 2}
+  m_Motion: {fileID: 7400000, guid: 5099abf2e634246ac815b41d9c991f02, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -609,7 +609,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan punch1
+  m_Name: samal punch 1
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -625,7 +625,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 95f627555aadf401785d5c216b17b775, type: 2}
+  m_Motion: {fileID: 7400000, guid: c5f65871d6a1849bcb129b1f2e94adf9, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -697,7 +697,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Air attack to the side
+  m_Name: samal air attack to the side
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -711,7 +711,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: acbcc8562655242b1b52141eddde02d3, type: 2}
+  m_Motion: {fileID: 7400000, guid: a05cd5200225c435ea72c5c48180c2ab, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -745,7 +745,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan animator
+  m_Name: or samal animator
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: jump
@@ -844,10 +844,10 @@ AnimatorStateMachine:
     m_Position: {x: 230, y: 280, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4134229498874590338}
-    m_Position: {x: 460, y: -240, z: 0}
+    m_Position: {x: 430, y: -260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1321853436087495752}
-    m_Position: {x: -360, y: 100, z: 0}
+    m_Position: {x: -340, y: 130, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8012396301839763852}
     m_Position: {x: -340, y: 200, z: 0}
@@ -951,7 +951,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan walks
+  m_Name: samal walks
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -969,7 +969,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 6468e20dff9234a208bbe55c3f57a1ee, type: 2}
+  m_Motion: {fileID: 7400000, guid: 998d2ee9fef3e42f5af4307e41247017, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1091,7 +1091,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan heavy punch 1
+  m_Name: samal heavy punch 1
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1105,7 +1105,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 8faa0d2e06cae48ddb693a039efa015f, type: 2}
+  m_Motion: {fileID: 7400000, guid: a05cd5200225c435ea72c5c48180c2ab, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1149,7 +1149,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan idle 0
+  m_Name: samal idle 0
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1163,7 +1163,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7457ab84e856540a6b1d3597cc1f4785, type: 2}
+  m_Motion: {fileID: 7400000, guid: 4fa7d548c0aca4dd8ac35e668a3cf167, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1176,7 +1176,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan falling
+  m_Name: samal falling
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1195,7 +1195,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 8a962040326274ac183fec871527de35, type: 2}
+  m_Motion: {fileID: 7400000, guid: 06a1277adb7184de79160c54fe5b9d8d, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1208,7 +1208,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: wall stick
+  m_Name: samal wall stick
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1222,7 +1222,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 5038ea7f3739d47ebb89c584933d0dd8, type: 2}
+  m_Motion: {fileID: 7400000, guid: 6a6db701151054799aa86588508eb797, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1397,7 +1397,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ait attack up
+  m_Name: samal air attack up
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1411,7 +1411,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 0015bf174532841e3ad72b5428676e47, type: 2}
+  m_Motion: {fileID: 7400000, guid: 4eecde96a635b4f15a52bb5ad0c79e85, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1561,7 +1561,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan punch 2
+  m_Name: samal punch 2
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1577,7 +1577,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 9b82aa29d005a495b948a44ec27401f4, type: 2}
+  m_Motion: {fileID: 7400000, guid: babd1206f00d441cab2a21a5eba590a6, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -1771,7 +1771,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: matan heavy punch 3
+  m_Name: samal heavy punch 3 0
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1785,7 +1785,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: acbcc8562655242b1b52141eddde02d3, type: 2}
+  m_Motion: {fileID: 7400000, guid: 791845d2d1b574ba6b331f8d4f231c98, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
