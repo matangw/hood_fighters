@@ -80,43 +80,26 @@ public class Movements : MonoBehaviour
 
     private void HandleInput()
     {
-        // Only process input if it's from this player's device
-        if (playerInput != null && playerInput.currentControlScheme != null)
+        // Read movement input
+        var movementAction = playerActions.player_actions_map.movement;
+        Vector2 movementInput = movementAction.ReadValue<Vector2>();
+
+        // If wall sliding, check if we should ignore the input
+        if (isWallSliding)
         {
-            var movementAction = playerActions.player_actions_map.movement;
-            Vector2 movementInput = Vector2.zero;
-
-            if (movementAction.activeControl != null &&
-                movementAction.activeControl.device == playerInput.devices[0])
+            float facingDirection = Mathf.Sign(transform.localScale.x);
+            // If trying to move in the same direction as facing, ignore the input
+            if (Mathf.Sign(movementInput.x) == facingDirection)
             {
-                movementInput = movementAction.ReadValue<Vector2>();
-            }
-
-            // If wall sliding, check if we should ignore the input
-            if (isWallSliding)
-            {
-                float facingDirection = Mathf.Sign(transform.localScale.x);
-                // If trying to move in the same direction as facing, ignore the input
-                if (Mathf.Sign(movementInput.x) == facingDirection)
-                {
-                    movementInput.x = 0;
-                }
-            }
-
-            moveInput = movementInput.x;
-
-            // Read jump input only from this player's device
-            var jumpAction = playerActions.player_actions_map.jump;
-            if (jumpAction.activeControl != null &&
-                jumpAction.activeControl.device == playerInput.devices[0])
-            {
-                jumpPressed = jumpAction.triggered;
-            }
-            else
-            {
-                jumpPressed = false;
+                movementInput.x = 0;
             }
         }
+
+        moveInput = movementInput.x;
+
+        // Read jump input
+        var jumpAction = playerActions.player_actions_map.jump;
+        jumpPressed = jumpAction.triggered;
     }
 
     private void CheckGrounded()
@@ -232,7 +215,7 @@ public class Movements : MonoBehaviour
         {
             animator.SetBool("moving", Mathf.Abs(moveInput) > 0.1f);
             animator.SetBool("isGrounded", isGrounded);
-            animator.SetBool("isWallSliding", isWallSliding);
+            //animator.SetBool("isWallSliding", isWallSliding);
         }
     }
 
