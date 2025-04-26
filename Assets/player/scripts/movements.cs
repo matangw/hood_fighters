@@ -47,7 +47,7 @@ public class Movements : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
 
         // Initialize input actions
-        playerActions = new Player_actions();
+        playerInput = GetComponent<PlayerInput>();
         playerActions.player_actions_map.Enable();
     }
 
@@ -80,25 +80,26 @@ public class Movements : MonoBehaviour
 
     private void HandleInput()
     {
-        // Read movement input
-        var movementAction = playerActions.player_actions_map.movement;
-        Vector2 movementInput = movementAction.ReadValue<Vector2>();
+        if (playerInput == null || playerInput.actions == null)
+            return;
 
-        // If wall sliding, check if we should ignore the input
+        // Read movement input from the correct device-bound actions
+        var movementAction = playerInput.actions["movement"];
+        Vector2 movementValue = movementAction.ReadValue<Vector2>();
+
         if (isWallSliding)
         {
             float facingDirection = Mathf.Sign(transform.localScale.x);
-            // If trying to move in the same direction as facing, ignore the input
-            if (Mathf.Sign(movementInput.x) == facingDirection)
+            if (Mathf.Sign(movementValue.x) == facingDirection)
             {
-                movementInput.x = 0;
+                movementValue.x = 0;
             }
         }
 
-        moveInput = movementInput.x;
+        moveInput = movementValue.x;
 
         // Read jump input
-        var jumpAction = playerActions.player_actions_map.jump;
+        var jumpAction = playerInput.actions["jump"];
         jumpPressed = jumpAction.triggered;
     }
 
