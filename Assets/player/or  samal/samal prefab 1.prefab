@@ -860,6 +860,7 @@ GameObject:
   - component: {fileID: 6834493087998050548}
   - component: {fileID: 1006747853874838036}
   - component: {fileID: 5270194218525372232}
+  - component: {fileID: 4404834568229878206}
   m_Layer: 0
   m_Name: samal prefab 1
   m_TagString: Untagged
@@ -1026,6 +1027,36 @@ MonoBehaviour:
   wallCheckFeet: {fileID: 6975031012967602233}
   wallCheckRadius: 0.1
   moveInput: 0
+--- !u!114 &4404834568229878206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5407725223622307934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: c6b2b084df3de4994af0ee0bbe4bf948, type: 3}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: controller
+  m_DefaultActionMap: player_actions_map
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &5564413071165605804
 GameObject:
   m_ObjectHideFlags: 0

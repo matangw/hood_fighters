@@ -17,6 +17,7 @@ public class Combat : MonoBehaviour
     private bool isBlocking = false;
     private Rigidbody2D rb;
     private float originalGravityScale;
+    private PlayerInput playerInput;
 
     // Reference to the movement script
     private Movements movementScript;
@@ -36,11 +37,12 @@ public class Combat : MonoBehaviour
         animator = GetComponent<Animator>();
         movementScript = GetComponent<Movements>();
         rb = GetComponent<Rigidbody2D>();
+        playerInput = GetComponent<PlayerInput>();
         originalGravityScale = rb.gravityScale;
 
         // Initialize input actions
         playerActions = new Player_actions();
-        playerActions.player_action_map.Enable();
+        playerActions.player_actions_map.Enable();
 
         if (animator == null)
         {
@@ -52,7 +54,7 @@ public class Combat : MonoBehaviour
     {
         if (playerActions != null)
         {
-            playerActions.player_action_map.Enable();
+            playerActions.player_actions_map.Enable();
         }
     }
 
@@ -60,63 +62,102 @@ public class Combat : MonoBehaviour
     {
         if (playerActions != null)
         {
-            playerActions.player_action_map.Disable();
+            playerActions.player_actions_map.Disable();
         }
     }
 
     void Update()
     {
-        // Read input values from both keyboard and input action
-        movementInput = playerActions.player_action_map.movement.ReadValue<Vector2>();
-        yAimingInput = playerActions.player_action_map.y_aiming.ReadValue<float>();
-        jumpPressed = playerActions.player_action_map.jump.triggered;
-        lightPunchPressed = playerActions.player_action_map.light_punch.triggered;
-        heavyPunchPressed = playerActions.player_action_map.heavy_punch.triggered;
-        blockPressed = playerActions.player_action_map.block.IsPressed();
-
-        // Handle blocking input (both keyboard and input action)
-        isBlocking = Input.GetKey(KeyCode.J) || blockPressed;
-        if (animator != null)
+        // Only process input if it's from this player's device
+        if (playerInput != null && playerInput.currentControlScheme != null)
         {
-            animator.SetBool("blocking", isBlocking);
-        }
-
-        // If blocking, disable movement and return early
-        if (isBlocking)
-        {
-            if (movementScript != null)
+            // Read input values only from this player's device
+            var movementAction = playerActions.player_actions_map.movement;
+            if (movementAction.activeControl != null &&
+                movementAction.activeControl.device == playerInput.devices[0])
             {
-                movementScript.enabled = false;
+                movementInput = movementAction.ReadValue<Vector2>();
             }
-            return;
-        }
-        else if (movementScript != null)
-        {
-            movementScript.enabled = true;
-        }
 
-        // Check if combo should reset due to time passed
-        if (Time.time - lastPunchTime > comboWindowTime && comboCounter > 0)
-        {
-            ResetCombo();
-        }
+            var yAimingAction = playerActions.player_actions_map.y_aiming;
+            if (yAimingAction.activeControl != null &&
+                yAimingAction.activeControl.device == playerInput.devices[0])
+            {
+                yAimingInput = yAimingAction.ReadValue<float>();
+            }
 
-        // Handle punch input (both keyboard and input action)
-        if ((Input.GetKeyDown(KeyCode.K) || lightPunchPressed) && canAttack)
-        {
-            Punch();
-        }
+            var jumpAction = playerActions.player_actions_map.jump;
+            if (jumpAction.activeControl != null &&
+                jumpAction.activeControl.device == playerInput.devices[0])
+            {
+                jumpPressed = jumpAction.triggered;
+            }
 
-        // Handle heavy punch input (both keyboard and input action)
-        if ((Input.GetKeyDown(KeyCode.L) || heavyPunchPressed) && canAttack)
-        {
-            HeavyPunch();
-        }
+            var lightPunchAction = playerActions.player_actions_map.light_punch;
+            if (lightPunchAction.activeControl != null &&
+                lightPunchAction.activeControl.device == playerInput.devices[0])
+            {
+                lightPunchPressed = lightPunchAction.triggered;
+            }
 
-        // Handle air aiming
-        if (movementScript != null && !movementScript.IsGrounded)
-        {
-            UpdateAirAiming();
+            var heavyPunchAction = playerActions.player_actions_map.heavy_punch;
+            if (heavyPunchAction.activeControl != null &&
+                heavyPunchAction.activeControl.device == playerInput.devices[0])
+            {
+                heavyPunchPressed = heavyPunchAction.triggered;
+            }
+
+            var blockAction = playerActions.player_actions_map.block;
+            if (blockAction.activeControl != null &&
+                blockAction.activeControl.device == playerInput.devices[0])
+            {
+                blockPressed = blockAction.IsPressed();
+            }
+
+            // Handle blocking input
+            isBlocking = blockPressed;
+            if (animator != null)
+            {
+                animator.SetBool("blocking", isBlocking);
+            }
+
+            // If blocking, disable movement and return early
+            if (isBlocking)
+            {
+                if (movementScript != null)
+                {
+                    movementScript.enabled = false;
+                }
+                return;
+            }
+            else if (movementScript != null)
+            {
+                movementScript.enabled = true;
+            }
+
+            // Check if combo should reset due to time passed
+            if (Time.time - lastPunchTime > comboWindowTime && comboCounter > 0)
+            {
+                ResetCombo();
+            }
+
+            // Handle punch input
+            if (lightPunchPressed && canAttack)
+            {
+                Punch();
+            }
+
+            // Handle heavy punch input
+            if (heavyPunchPressed && canAttack)
+            {
+                HeavyPunch();
+            }
+
+            // Handle air aiming
+            if (movementScript != null && !movementScript.IsGrounded)
+            {
+                UpdateAirAiming();
+            }
         }
     }
 

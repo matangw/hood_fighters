@@ -33,6 +33,7 @@ public class Movements : MonoBehaviour
     private Player_actions playerActions;
     private float movementInput;
     private bool jumpPressed;
+    private PlayerInput playerInput;
 
     // Public property to access isGrounded from other scripts
     public bool IsGrounded => isGrounded;
@@ -43,17 +44,18 @@ public class Movements : MonoBehaviour
         animator = GetComponent<Animator>();
         rb.freezeRotation = true;
         originalXScale = Mathf.Abs(transform.localScale.x);
+        playerInput = GetComponent<PlayerInput>();
 
         // Initialize input actions
         playerActions = new Player_actions();
-        playerActions.player_action_map.Enable();
+        playerActions.player_actions_map.Enable();
     }
 
     void OnEnable()
     {
         if (playerActions != null)
         {
-            playerActions.player_action_map.Enable();
+            playerActions.player_actions_map.Enable();
         }
     }
 
@@ -61,7 +63,7 @@ public class Movements : MonoBehaviour
     {
         if (playerActions != null)
         {
-            playerActions.player_action_map.Disable();
+            playerActions.player_actions_map.Disable();
         }
     }
 
@@ -78,30 +80,43 @@ public class Movements : MonoBehaviour
 
     private void HandleInput()
     {
-        // Read input values from both keyboard and input action
-        var movementAction = playerActions.player_action_map.movement;
-        Vector2 movementInput = Vector2.zero;
-
-        if (movementAction.activeControl != null)
+        // Only process input if it's from this player's device
+        if (playerInput != null && playerInput.currentControlScheme != null)
         {
-            movementInput = movementAction.ReadValue<Vector2>();
-        }
+            var movementAction = playerActions.player_actions_map.movement;
+            Vector2 movementInput = Vector2.zero;
 
-        // If wall sliding, check if we should ignore the input
-        if (isWallSliding)
-        {
-            float facingDirection = Mathf.Sign(transform.localScale.x);
-            // If trying to move in the same direction as facing, ignore the input
-            if (Mathf.Sign(movementInput.x) == facingDirection)
+            if (movementAction.activeControl != null &&
+                movementAction.activeControl.device == playerInput.devices[0])
             {
-                movementInput.x = 0;
+                movementInput = movementAction.ReadValue<Vector2>();
+            }
+
+            // If wall sliding, check if we should ignore the input
+            if (isWallSliding)
+            {
+                float facingDirection = Mathf.Sign(transform.localScale.x);
+                // If trying to move in the same direction as facing, ignore the input
+                if (Mathf.Sign(movementInput.x) == facingDirection)
+                {
+                    movementInput.x = 0;
+                }
+            }
+
+            moveInput = movementInput.x;
+
+            // Read jump input only from this player's device
+            var jumpAction = playerActions.player_actions_map.jump;
+            if (jumpAction.activeControl != null &&
+                jumpAction.activeControl.device == playerInput.devices[0])
+            {
+                jumpPressed = jumpAction.triggered;
+            }
+            else
+            {
+                jumpPressed = false;
             }
         }
-
-        moveInput = movementInput.x;
-
-        // Read jump input
-        jumpPressed = playerActions.player_action_map.jump.triggered;
     }
 
     private void CheckGrounded()

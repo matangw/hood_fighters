@@ -9,6 +9,7 @@ public class attack_point : MonoBehaviour
     private Animator animator;
     private bool isOnCooldown = false;
     private float cooldownEndTime = 0f;
+    private PlayerInput playerInput;
 
     // Input action references
     private Player_actions playerActions;
@@ -20,17 +21,18 @@ public class attack_point : MonoBehaviour
     {
         combatScript = GetComponentInParent<Combat>();
         animator = GetComponentInParent<Animator>();
+        playerInput = GetComponentInParent<PlayerInput>();
 
         // Initialize input actions
         playerActions = new Player_actions();
-        playerActions.player_action_map.Enable();
+        playerActions.player_actions_map.Enable();
     }
 
     void OnEnable()
     {
         if (playerActions != null)
         {
-            playerActions.player_action_map.Enable();
+            playerActions.player_actions_map.Enable();
         }
     }
 
@@ -38,16 +40,30 @@ public class attack_point : MonoBehaviour
     {
         if (playerActions != null)
         {
-            playerActions.player_action_map.Disable();
+            playerActions.player_actions_map.Disable();
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Read input values from both keyboard and input action
-        lightPunchPressed = playerActions.player_action_map.light_punch.triggered;
-        heavyPunchPressed = playerActions.player_action_map.heavy_punch.triggered;
+        // Only process input if it's from this player's device
+        if (playerInput != null && playerInput.currentControlScheme != null)
+        {
+            var lightPunchAction = playerActions.player_actions_map.light_punch;
+            if (lightPunchAction.activeControl != null &&
+                lightPunchAction.activeControl.device == playerInput.devices[0])
+            {
+                lightPunchPressed = lightPunchAction.triggered;
+            }
+
+            var heavyPunchAction = playerActions.player_actions_map.heavy_punch;
+            if (heavyPunchAction.activeControl != null &&
+                heavyPunchAction.activeControl.device == playerInput.devices[0])
+            {
+                heavyPunchPressed = heavyPunchAction.triggered;
+            }
+        }
 
         // Check if cooldown has ended
         if (isOnCooldown && Time.time >= cooldownEndTime)
