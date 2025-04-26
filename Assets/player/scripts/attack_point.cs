@@ -12,7 +12,6 @@ public class attack_point : MonoBehaviour
     private PlayerInput playerInput;
 
     // Input action references
-    private Player_actions playerActions;
     private bool lightPunchPressed;
     private bool heavyPunchPressed;
 
@@ -22,48 +21,20 @@ public class attack_point : MonoBehaviour
         combatScript = GetComponentInParent<Combat>();
         animator = GetComponentInParent<Animator>();
         playerInput = GetComponentInParent<PlayerInput>();
-
-        // Initialize input actions
-        playerActions = new Player_actions();
-        playerActions.player_actions_map.Enable();
-    }
-
-    void OnEnable()
-    {
-        if (playerActions != null)
-        {
-            playerActions.player_actions_map.Enable();
-        }
-    }
-
-    void OnDisable()
-    {
-        if (playerActions != null)
-        {
-            playerActions.player_actions_map.Disable();
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Only process input if it's from this player's device
-        if (playerInput != null && playerInput.currentControlScheme != null)
-        {
-            var lightPunchAction = playerActions.player_actions_map.light_punch;
-            if (lightPunchAction.activeControl != null &&
-                lightPunchAction.activeControl.device == playerInput.devices[0])
-            {
-                lightPunchPressed = lightPunchAction.triggered;
-            }
+        if (playerInput == null || playerInput.actions == null)
+            return;
 
-            var heavyPunchAction = playerActions.player_actions_map.heavy_punch;
-            if (heavyPunchAction.activeControl != null &&
-                heavyPunchAction.activeControl.device == playerInput.devices[0])
-            {
-                heavyPunchPressed = heavyPunchAction.triggered;
-            }
-        }
+        // Read input values from the correct device-bound actions
+        var lightPunchAction = playerInput.actions["light_punch"];
+        var heavyPunchAction = playerInput.actions["heavy_punch"];
+
+        lightPunchPressed = lightPunchAction.triggered;
+        heavyPunchPressed = heavyPunchAction.triggered;
 
         // Check if cooldown has ended
         if (isOnCooldown && Time.time >= cooldownEndTime)
@@ -73,13 +44,12 @@ public class attack_point : MonoBehaviour
 
         if (!isOnCooldown)
         {
-            // Check for both keyboard and input action attacks
-            if (Input.GetKeyDown(KeyCode.K) || lightPunchPressed)
+            if (lightPunchPressed)
             {
                 isHeavyPunch = false;
                 PerformPunch();
             }
-            else if (Input.GetKeyDown(KeyCode.L) || heavyPunchPressed)
+            else if (heavyPunchPressed)
             {
                 isHeavyPunch = true;
                 PerformPunch();

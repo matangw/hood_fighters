@@ -23,10 +23,6 @@ public class Combat : MonoBehaviour
     private Movements movementScript;
 
     // Input action references
-    private Player_actions playerActions;
-    private Vector2 movementInput;
-    private float yAimingInput;
-    private bool jumpPressed;
     private bool lightPunchPressed;
     private bool heavyPunchPressed;
     private bool blockPressed;
@@ -40,55 +36,25 @@ public class Combat : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         originalGravityScale = rb.gravityScale;
 
-        // Initialize input actions
-        playerActions = new Player_actions();
-        playerActions.player_actions_map.Enable();
-
         if (animator == null)
         {
             Debug.LogWarning("No Animator component found on player. Combat animations won't work.");
         }
     }
 
-    void OnEnable()
-    {
-        if (playerActions != null)
-        {
-            playerActions.player_actions_map.Enable();
-        }
-    }
-
-    void OnDisable()
-    {
-        if (playerActions != null)
-        {
-            playerActions.player_actions_map.Disable();
-        }
-    }
-
     void Update()
     {
-        // Read input values
-        if (playerInput != null)
-        {
-            // Handle movement input
-            var movementAction = playerActions.player_actions_map.movement;
-            movementInput = movementAction.ReadValue<Vector2>();
-            Debug.Log($"Movement Input: {movementInput}");
+        if (playerInput == null || playerInput.actions == null)
+            return;
 
-            // Handle aiming input
-            var yAimingAction = playerActions.player_actions_map.y_aiming;
-            yAimingInput = yAimingAction.ReadValue<float>();
+        // Read input values from the correct device-bound actions
+        var lightPunchAction = playerInput.actions["light_punch"];
+        var heavyPunchAction = playerInput.actions["heavy_punch"];
+        var blockAction = playerInput.actions["block"];
 
-            // Handle jump input
-            var jumpAction = playerActions.player_actions_map.jump;
-            jumpPressed = jumpAction.triggered;
-        }
-
-        // Handle punch inputs (keeping the working implementation)
-        lightPunchPressed = playerActions.player_actions_map.light_punch.triggered;
-        heavyPunchPressed = playerActions.player_actions_map.heavy_punch.triggered;
-        blockPressed = playerActions.player_actions_map.block.IsPressed();
+        lightPunchPressed = lightPunchAction.triggered;
+        heavyPunchPressed = heavyPunchAction.triggered;
+        blockPressed = blockAction.IsPressed();
 
         // Handle blocking input
         isBlocking = blockPressed;
@@ -142,12 +108,15 @@ public class Combat : MonoBehaviour
 
         int aimingValue = 0;
 
-        // Use both keyboard and input action for aiming
-        if (Input.GetKey(KeyCode.W) || yAimingInput > 0)
+        // Use input action for aiming
+        var yAimingAction = playerInput.actions["y_aiming"];
+        float yAimingInput = yAimingAction.ReadValue<float>();
+
+        if (yAimingInput > 0)
         {
             aimingValue = 1; // Aiming up
         }
-        else if (Input.GetKey(KeyCode.S) || yAimingInput < 0)
+        else if (yAimingInput < 0)
         {
             aimingValue = -1; // Aiming down
         }
@@ -222,12 +191,7 @@ public class Combat : MonoBehaviour
         {
             animator.SetInteger("combo_counter", comboCounter);
             animator.SetTrigger("punch");
-
-
         }
-
-        // Increment combo counter
-
 
         // Check if we've reached max combo
         if (comboCounter >= maxComboCount)
@@ -253,8 +217,6 @@ public class Combat : MonoBehaviour
         {
             // Use the same punch trigger, animator will choose animation based on isGrounded
             animator.SetTrigger("punch");
-
-
         }
 
         // Prevent attack spamming by using a small delay
