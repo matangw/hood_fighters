@@ -96,19 +96,15 @@ public class attack_point : MonoBehaviour
         // Start cooldown based on punch duration
         isOnCooldown = true;
         cooldownEndTime = Time.time + currentPunch.duration;
-        Debug.Log($"Starting cooldown for {currentPunch.duration} seconds");
 
-        Debug.Log($"Current time: {Time.time}, Scheduling attack for {currentPunch.hitSecond} seconds from now");
         // Schedule the attack for the hitSecond timing
         Invoke(nameof(PerformAttack), currentPunch.hitSecond);
     }
 
     private void PerformAttack()
     {
-        Debug.Log($"Attack executed at time: {Time.time}");
         int enemyLayer = LayerMask.GetMask("enemy");
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, attackRadius, enemyLayer);
-        Debug.Log("Number of colliders found: " + hitColliders.Length);
 
         // Get the current punch damage based on grounded state and air aiming
         float damage;
@@ -162,10 +158,10 @@ public class attack_point : MonoBehaviour
 
     void damageEnemy(Collider2D collider, float damage)
     {
-        hitable_object hitable = collider.GetComponent<hitable_object>();
-        if (hitable != null)
+        Player player = collider.GetComponent<Player>();
+        if (player != null)
         {
-            hitable.ChangeHP(-damage);
+            player.TakeDamage(damage);
         }
     }
 

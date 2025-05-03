@@ -47,7 +47,7 @@ public class Movements : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
 
         // Initialize input actions
-        playerInput = GetComponent<PlayerInput>();
+        playerActions = new Player_actions();
         playerActions.player_actions_map.Enable();
     }
 

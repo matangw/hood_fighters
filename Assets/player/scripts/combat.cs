@@ -151,6 +151,11 @@ public class Combat : MonoBehaviour
                 // Ground heavy attack
                 isHeavyAttacking = true;
                 movementScript.enabled = false;
+                if (rb != null)
+                {
+                    rb.constraints = RigidbodyConstraints2D.FreezeAll;
+                    rb.linearVelocity = Vector2.zero;
+                }
 
                 if (animator != null)
                 {
@@ -165,9 +170,12 @@ public class Combat : MonoBehaviour
                 isHeavyAttacking = true;
                 if (rb != null)
                 {
-                    // Freeze vertical movement
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+                    // Freeze vertical movement for hit second duration
+                    rb.linearVelocity = Vector2.zero;
                     rb.gravityScale = 0;
+                    rb.constraints = RigidbodyConstraints2D.FreezeAll;
+                    movementScript.enabled = false;
+                    StartCoroutine(VerticalFreezeCooldown(PunchData.HeavyPunches[animator != null ? animator.GetInteger("air_aiming") : 0].hitSecond));
                 }
 
                 if (animator != null)
@@ -201,7 +209,6 @@ public class Combat : MonoBehaviour
 
             // Use longer cooldown for the final attack in the combo
             StartCoroutine(AttackCooldown(0.5f));
-            Debug.Log("Max combo reached, resetting counter with longer cooldown");
         }
         else
         {
@@ -230,6 +237,20 @@ public class Combat : MonoBehaviour
         canAttack = true;
     }
 
+    private IEnumerator VerticalFreezeCooldown(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (rb != null)
+        {
+            rb.gravityScale = originalGravityScale;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            if (movementScript != null)
+            {
+                movementScript.enabled = true;
+            }
+        }
+    }
+
     private IEnumerator HeavyAttackCooldown()
     {
         canAttack = false;
@@ -238,14 +259,10 @@ public class Combat : MonoBehaviour
         canAttack = true;
         isHeavyAttacking = false;
 
-        // Restore movement and gravity
-        if (movementScript != null)
+        if (movementScript != null && rb != null && rb.gravityScale != 0)
         {
             movementScript.enabled = true;
-        }
-        if (rb != null)
-        {
-            rb.gravityScale = originalGravityScale;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
     }
 
@@ -256,7 +273,6 @@ public class Combat : MonoBehaviour
         {
             animator.SetInteger("combo_counter", comboCounter);
         }
-        Debug.Log("Combo reset due to timeout");
     }
 
     // Public method to allow other scripts to reset the combo if needed
